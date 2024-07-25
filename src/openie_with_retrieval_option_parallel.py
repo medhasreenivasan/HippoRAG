@@ -99,6 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--llm', type=str, default='openai', help="LLM, e.g., 'openai' or 'together'")
     parser.add_argument('--model_name', type=str, default='gpt-3.5-turbo-1106', help='Specific model name')
     parser.add_argument('--num_processes', type=int, default=10)
+    parser.add_argument('--keyword_flag', action='store_false')
 
     args = parser.parse_args()
 
@@ -106,6 +107,7 @@ if __name__ == '__main__':
     run_ner = args.run_ner
     num_passages = args.num_passages
     model_name = args.model_name
+    keyword_flag = args.keyword_flag
 
     corpus = json.load(open(f'data/{dataset}_corpus.json', 'r'))
 
@@ -183,7 +185,7 @@ if __name__ == '__main__':
                 break
 
 
-    def extract_openie_from_triples(triple_json):
+    def extract_openie_from_triples(triple_json,keyword_flag):
 
         new_json = []
         all_entities = []
@@ -206,6 +208,12 @@ if __name__ == '__main__':
                     chatgpt_total_tokens += total_ner_tokens
 
                     ents_by_doc.append(doc_entities)
+
+                if keyword_flag:
+                    keywords = r['custom_entities']
+                    ## set comprehension to avoid duplicate keywords
+                    keyword_entities = list({keyword['entity'] for keyword in keywords})
+                    doc_entities.extend(keyword_entities)
 
                 triples, total_tokens = openie_post_ner_extract(passage, doc_entities, model_name)
 
