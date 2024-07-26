@@ -99,7 +99,7 @@ if __name__ == '__main__':
     parser.add_argument('--llm', type=str, default='openai', help="LLM, e.g., 'openai' or 'together'")
     parser.add_argument('--model_name', type=str, default='gpt-3.5-turbo-1106', help='Specific model name')
     parser.add_argument('--num_processes', type=int, default=10)
-    parser.add_argument('--keyword_flag', action='store_false')
+    parser.add_argument('--keyword_flag', action='store_true')
 
     args = parser.parse_args()
 
@@ -185,7 +185,7 @@ if __name__ == '__main__':
                 break
 
 
-    def extract_openie_from_triples(triple_json,keyword_flag):
+    def extract_openie_from_triples(triple_json):
 
         new_json = []
         all_entities = []
